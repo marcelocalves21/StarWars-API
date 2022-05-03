@@ -38,6 +38,14 @@ def handle_all_users():
 
     return jsonify(users_list), 200
 
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+def handle_each_user(user_id):
+
+    user = User.query.get(user_id)
+    return jsonify(user.serialize())
+
+
 @app.route('/user', methods=['POST'])
 def create_user():
     request_body = request.get_json()
@@ -45,6 +53,7 @@ def create_user():
     db.session.add(new_user)
     db.session.commit()
     return f"A new user {request_body['email']} was successfully added", 200
+
 
 @app.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
@@ -61,12 +70,6 @@ def update_user(user_id):
     db.session.commit()
     return jsonify(user.serialize())
 
-@app.route('/user/<int:user_id>', methods=['GET'])
-def handle_each_user(user_id):
-
-    user = User.query.get(user_id)
-    return jsonify(user.serialize())
-
 
 @app.route('/planets', methods=['GET'])
 def handle_planets():
@@ -74,8 +77,6 @@ def handle_planets():
     planets_list = list(map(lambda x : x.serialize(), planets))
     
     return jsonify(planets_list), 200
-
-
 
 
 
