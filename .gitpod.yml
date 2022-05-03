@@ -12,7 +12,7 @@ tasks:
         cp .env.example .env &&
         pipenv install  &&
         mysql -u root -e "CREATE DATABASE example" &&
-        pipenv run init &&
+        (pipenv run init || true) &&
         pipenv run migrate &&
         pipenv run upgrade;
       command: >
