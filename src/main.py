@@ -38,6 +38,28 @@ def handle_all_users():
 
     return jsonify(users_list), 200
 
+@app.route('/user', methods=['POST'])
+def create_user():
+    request_body = request.get_json()
+    new_user = User(email=request_body['email'], password=request_body['password'])
+    db.session.add(new_user)
+    db.session.commit()
+    return f"A new user {request_body['email']} was successfully added", 200
+
+@app.route('/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+
+    request_body = request.get_json()
+    user = User.query.get(user_id)
+    if user is None:
+        raise APIException('User not found', status_code=404)
+
+    if "email" in request_body:
+        user.email = request_body["email"]
+    if "password" in request_body:
+        user.password = request_body["password"]
+    db.session.commit()
+    return jsonify(user.serialize())
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def handle_each_user(user_id):
